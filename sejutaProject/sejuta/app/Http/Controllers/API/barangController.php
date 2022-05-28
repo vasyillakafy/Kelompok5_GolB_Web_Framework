@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Models\barang;
+use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\Request;
 
 class barangController extends Controller
@@ -50,6 +51,8 @@ class barangController extends Controller
         $user->delete();
         return response()->json(['status' => 'ok', 'message' => 'Data data Berhasil dihapus'], 201);
     }
+
+   
     // public function index()
     // {
     //     // $data = barang::all();
