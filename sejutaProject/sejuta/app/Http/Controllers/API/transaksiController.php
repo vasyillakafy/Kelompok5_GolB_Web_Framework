@@ -14,9 +14,9 @@ class transaksiController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($nama)
     {
-        $data = kelola::with('barang')->with('user')->with('users')->get();
+        $data = kelola::where('id_user', '=', $nama )->with('users')->with('barang')->get();
         return response()->json($data, 200);
     }
 
@@ -52,23 +52,31 @@ class transaksiController extends Controller
                             'id_users' => $request->id_users,
                             'id_barang' => $request->id_barang,
                             'id_user' => $request->id_user,
-                            'foto_paket' => $request->foto_paket,
+                            'alamat_user' => $request->alamat_user,
+                            // 'foto_paket' => $request->foto_paket,
                             'tgl_kirim' => $request->tgl_kirim,
                             'tgl_terima' => $request->tgl_terima,
                             'status' => 'belum diproses'
-                          
-        
+                            
         
                         ]);
+
         return response()->json(['status' => 'ok', 'message' => 'Data data Berhasil ditambahkan'], 201);
     }
 
     public function updateTransaksi($id, Request $request)
     {
+        $tgl_kirim1 =date('Y-m-d');
+
         $trans = kelola::findOrFail($id);
-        $trans->update($request->all());
-        return response()->json(['status' => 'ok', 'message' => 'Data Berhasil diupdate'], 201);
+        $trans->update([
+            'tgl_terima' => $tgl_kirim1,
+            'status' => 'selesai'
+        ]
+        );
+        return response()->json(['status' => 'ok', 'message' => 'Data Berhasil diupdate', 'data' => $trans], 200 );
     }
+    
     public function deleteTransaksi($id)
     {
         $user = kelola::findOrFail($id);
@@ -109,7 +117,7 @@ class transaksiController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        
     }
 
     /**
