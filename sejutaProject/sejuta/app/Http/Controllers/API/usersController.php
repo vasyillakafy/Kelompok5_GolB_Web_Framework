@@ -6,6 +6,7 @@ use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\users;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -56,7 +57,8 @@ class usersController extends Controller
      */
     public function show($id)
     {
-        //
+        $data = User::where('id', $id)->first();
+        return response()->json($data, 200);
     }
 
     /**
@@ -144,22 +146,62 @@ class usersController extends Controller
 
         return ResponseFormatter::success($token, 'Token Revoked');
     }
-
-    public function updateProfile(Request $request)
-    {
-        $data = $request->validate([
-            'fullname' => ['required', 'string', 'max:100'],
-            'email' => ['required', 'string', 'email', 'max:100', 'unique:users,email'],
-            'phone_number' => ['required', 'string', 'min:11', 'max:13', 'unique:users,phone_number'],
-            'pin_number' => ['required', 'string', 'min:6', 'max:6'],
-            'roles' => ['string', 'in:USER,ADMIN,KARYAWAN'],
-            'password' => ['string', new Password],
-        ]);
-
-        $user = Auth::user();
-        $user->update($data);
-
-        return ResponseFormatter::success($user, 'Profile Updated');
-    }
+public function update_profile(Request $request , $id){
+    $user = User::findOrFail($id);
+    $user->update($request->all());
+    return response()->json(['status' => 'ok', 'message' => 'Data Berhasil diupdate'], 201);
 
 }
+    
+    public function updateProfile(Request $request , $id)
+    {
+    //     $data = $request->validate([
+    //         'fullname' => ['required', 'string', 'max:100'],
+    //         'email' => ['required', 'string', 'email', 'max:100', 'unique:users,email'],
+    //         'phone_number' => ['required', 'string', 'min:11', 'max:13', 'unique:users,phone_number'],
+    //         'pin_number' => ['required', 'string', 'min:6', 'max:6'],
+    //         'roles' => ['string', 'in:USER,ADMIN,KARYAWAN'],
+    //         'password' => ['string', new Password],
+    //     ]);
+
+    //     $user = Auth::user();
+    //     $user->update($data);
+
+    //     return ResponseFormatter::success($user, 'Profile Updated');
+    // }
+
+
+    // try {
+    //     $request->validate([
+    //         'nama' => ['required', 'string', 'max:255'],
+    //         'username' => ['required', 'string', 'max:255', 'unique:users'],
+    //         'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+    //         // 'no_telp' => ['required', 'string', 'max:15'],
+    //     ]);
+
+    //     $user = Auth::user();
+    //     $user->update([
+    //         'id_level' => "3",
+    //         'nama' => $request->nama,
+    //         'jk' => $request->jk,
+    //         'username' => $request->username,
+    //         'email' => $request->email,
+    //         'password' => $request->password,
+    //         'password' => Hash::make($request->password),
+    //         'alamat' =>  $request->alamat,
+    //         'no_hp' => $request->no_hp,
+    //         'foto' => $request->foto,
+    //         'status' => 'aktif'
+    //     ]);
+
+    //     return ResponseFormatter::success($user, 'Profile Updated');
+    // } catch (Exception $error) {
+    //     return ResponseFormatter::error([
+    //         'message' => 'something went wrong',
+    //         'error' => $error
+    //     ], 'Aunthentication Failed', 500);
+    // }
+}
+
+    }
+
