@@ -27,7 +27,7 @@ class barangController extends Controller
 
     public function getID($id)
     {
-        $user = barang::findOrFail($id);
+        $user = barang::where('id',$id)->with('user')->first();
         return response()->json(['msg' => 'Data data Berhasil ditemukan', 'data' => $user], 200);
     }
 
